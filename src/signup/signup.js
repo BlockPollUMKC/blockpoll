@@ -23,7 +23,7 @@ const Signup = (props) => {
   // Initialize Web3 and the contract instance
   const [web3, setWeb3] = useState(null);
   const [contract, setContract] = useState(null);
-  const contractAddress = 'YOUR_CONTRACT_ADDRESS'; 
+  const contractAddress = '0x9e2fe52f30e74c92df07d541a2840737b1f4d20f'; 
   const contractABI = 
   [
     {

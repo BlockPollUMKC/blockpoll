@@ -24,7 +24,11 @@ const Signup = (props) => {
   const [web3, setWeb3] = useState(null);
   const [contract, setContract] = useState(null);
   const contractAddress = '0x9e2fe52f30e74c92df07d541a2840737b1f4d20f'; 
-  const contractABI = 
+  
+
+  useEffect(() => {
+    async function initializeWeb3() {
+      const contractABI = 
   [
     {
         "constant": true,
@@ -113,9 +117,6 @@ const Signup = (props) => {
         "type": "function"
     }
 ];
-
-  useEffect(() => {
-    async function initializeWeb3() {
       if (window.ethereum) {
         const web3Instance = new Web3(window.ethereum);
         const contractInstance = new web3Instance.eth.Contract(contractABI, contractAddress);

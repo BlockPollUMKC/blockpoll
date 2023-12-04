@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
 
+
 const Signup = (props) => {
   const [info, setInfo] = useState({
     'name': '',
@@ -23,88 +24,90 @@ const Signup = (props) => {
   // Initialize Web3 and the contract instance
   const [web3, setWeb3] = useState(null);
   const [contract, setContract] = useState(null);
-  const contractAddress = '0x9e2fe52f30e74c92df07d541a2840737b1f4d20f'; 
-  
-
-  useEffect(() => {
-    async function initializeWeb3() {
-      const contractABI = 
+  const contractAddress = 'YOUR_CONTRACT_ADDRESS'; 
+  const contractABI = 
   [
     {
         "constant": true,
         "inputs": [
             {
-                "name": "",
-                "type": "uint256"
+              "name": "",
+              "type": "address"
             }
-        ],
-        "name": "candidates",
-        "outputs": [
+          ],
+          "name": "users",
+          "outputs": [
             {
-                "name": "id",
-                "type": "uint256"
+              "name": "userId",
+              "type": "uint256"
             },
             {
-                "name": "name",
-                "type": "string"
+              "name": "username",
+              "type": "string"
             },
             {
-                "name": "voteCount",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [
+              "name": "email",
+              "type": "string"
+            },
             {
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "hasVoted",
-        "outputs": [
+              "name": "mobile",
+              "type": "uint256"
+            },
             {
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "candidatesCount",
-        "outputs": [
+              "name": "password",
+              "type": "string"
+            },
             {
-                "name": "",
-                "type": "uint256"
+              "name": "userAddress",
+              "type": "address"
             }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
+          ],
+          "payable": false,
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "constant": true,
+          "inputs": [],
+          "name": "userCount",
+          "outputs": [
             {
-                "name": "_name",
-                "type": "string"
+              "name": "",
+              "type": "uint256"
             }
-        ],
-        "name": "addCandidate",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
+          ],
+          "payable": false,
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "name": "_username",
+              "type": "string"
+            },
+            {
+              "name": "_email",
+              "type": "string"
+            },
+            {
+              "name": "_mobile",
+              "type": "uint256"
+            },
+            {
+              "name": "_password",
+              "type": "string"
+            }
+          ],
+          "name": "createUser",
+          "outputs": [],
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
             {
                 "name": "_candidateId",
                 "type": "uint256"
@@ -117,9 +120,15 @@ const Signup = (props) => {
         "type": "function"
     }
 ];
+
+  useEffect(() => {
+    async function initializeWeb3() {
       if (window.ethereum) {
         const web3Instance = new Web3(window.ethereum);
         const contractInstance = new web3Instance.eth.Contract(contractABI, contractAddress);
+        const netId=await (web3Instance.eth.net.getId());
+        console.log(netId);
+        console.log(contractInstance);
         setWeb3(web3Instance);
         setContract(contractInstance);
       } else {
@@ -138,12 +147,13 @@ const Signup = (props) => {
         try {
           const accounts = await web3.eth.requestAccounts();
           const sender = accounts[0];
-
-          // Call the registration function of the smart contract.
-          await contract.methods.register().send({ from: sender });
-
+          console.log("q");
+  
+          // Call the 'createUser' function of the smart contract.
+          await contract.methods.createUser(info.name,info.email,info.mobile,info.password).send({ from: sender });
+  
           // Redirect to the login page after successful registration.
-          props.history.push('/login');
+          await props.history.push('/login');
           window.location.reload();
         } catch (error) {
           console.error('Error registering user:', error);
